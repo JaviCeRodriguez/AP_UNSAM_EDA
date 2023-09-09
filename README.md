@@ -30,5 +30,5 @@ Pueden ejecutar notebooks con la interfaz de Jupyter de esta forma.
 Pero, el proyecto core es para Streamlit. Esta librería crea una web app en pocos pasos. Para conocer como funciona, entren a la documentación. Para levantar el proyecto, ejecuten lo siguiente en terminal:
 
 ```sh
-(venv) >>> streamlit run main.py
+(venv) >>> streamlit run Inicio.py
 ```
