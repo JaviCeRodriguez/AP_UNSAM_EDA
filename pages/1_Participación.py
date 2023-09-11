@@ -72,25 +72,24 @@ st.plotly_chart(figure_or_data=fig_edu, use_container_width=True)
 
 
 st.write("### Géneros y edades")
-generos = df_inicial['GENERO'].unique()
-fig_edad = make_subplots(rows=1, cols=len(generos), subplot_titles=generos, specs=[[{'type': 'pie'}]*len(generos)])
-
-for i, genero in enumerate(generos, start=1):
-    filtered_data = df_inicial[df_inicial['GENERO'] == genero]
-    edad_rango_counts = filtered_data['EDAD_RANGO'].value_counts().reset_index()
-    edad_rango_counts.columns = ['EDAD_RANGO', 'COUNT']
-    fig_edad.add_trace(
-        go.Pie(
-            labels=edad_rango_counts['EDAD_RANGO'],
-            values=edad_rango_counts['COUNT'],
-            title=f'Distribución de Rangos de Edades para {genero}',
-            name=genero,
-            textinfo='percent+label'
-        ),
-        row=1, col=i
-    )
+selected_generos = st.multiselect(
+    label="Selecciona los géneros",
+    options=df_inicial["GENERO"].unique(),
+    default=df_inicial["GENERO"].unique()
+)
+df_filtered = df_inicial[df_inicial["GENERO"].isin(selected_generos)]
+df_counts = df_filtered.groupby(['GENERO', 'EDAD_RANGO']).size().unstack(fill_value=0)
+fig_edad = go.Figure()
+for edad_rango in df_counts.columns:
+    fig_edad.add_trace(go.Bar(
+        x=df_counts.index,
+        y=df_counts[edad_rango],
+        name=edad_rango,
+    ))
 fig_edad.update_layout(
-    title='Distribución de Rangos de Edades por Género',
+    xaxis_title='Género',
+    yaxis_title='Cantidad',
+    title='Distribución de Rangos de Edades por Género (Cantidad)',
 )
 st.plotly_chart(fig_edad, use_container_width=True)
 
